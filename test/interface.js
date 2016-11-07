@@ -9,9 +9,9 @@ var methods = require('methods').map(function(method){
   return method;
 }).filter(Boolean)
 
-var route = require('../');
+var route = require('koa-route');
 
-describe('Koa Route', function(){
+describe('Middleware', function(){
   methods.forEach(function(method){
     var app = koa();
     app.use(route[method]('/:user(tj)', function*(user){
@@ -24,7 +24,7 @@ describe('Koa Route', function(){
           request(app.listen())
           [method]('/tj')
           .expect(200)
-          .expect(method === 'head' ? '' : 'tj', done);
+          .expect(method === 'head' ? undefined : 'tj', done);
         })
       })
 
@@ -58,7 +58,7 @@ describe('Koa Route', function(){
           request(app.listen())
           [method]('/tj')
           .expect(200)
-          .expect(method === 'head' ? '' : 'tj', done);
+          .expect(method === 'head' ? undefined : 'tj', done);
         })
       })
     })
@@ -98,7 +98,7 @@ describe('Koa Route', function(){
           request(app.listen())
             [method]('/tj')
             .expect(201)
-            .expect(method === 'head' ? '' : 'tj', done);
+            .expect(method === 'head' ? undefined : 'tj', done);
         })
       })
     })
