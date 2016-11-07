@@ -24,19 +24,19 @@ module.exports = function(opts){
     s.incr('request.' + this.method + '.count');
 
     // size
-    s.histogram('request.size', this.request.length);
+    s.histogram('request.size', this.request.length || 0);
 
     // remote addr
     s.set('request.addresses', this.ip);
 
     // duration
     var duration = s.timer('request.duration');
-    this.res.on('finish', function(res) {
+    this.res.on('finish', function() {
       duration();
       s.incr('response.count');
-      s.incr('response.' + res.statusCode + '.count');
-      s.histogram('response.size', res.data.length);
-    });
+      s.incr('response.' + this.response.status + '.count');
+      s.histogram('response.size', this.response.length);
+    }.bind(this));
 
     yield next;
   };
