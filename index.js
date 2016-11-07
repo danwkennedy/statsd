@@ -30,8 +30,14 @@ module.exports = function(opts){
     s.set('request.addresses', this.ip);
 
     // duration
-    this.res.on('finish', s.timer('request.duration'));
+    var duration = s.timer('request.duration');
+    this.res.on('finish', function(res) {
+      duration();
+      s.incr('response.count');
+      s.incr('response.' + res.statusCode + '.count');
+      s.histogram('response.size', res.data.length);
+    });
 
     yield next;
-  }
+  };
 };
